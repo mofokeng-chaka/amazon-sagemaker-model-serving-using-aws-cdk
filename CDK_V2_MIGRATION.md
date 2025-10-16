@@ -6,19 +6,21 @@ This document outlines the steps taken to migrate this SageMaker model serving p
 
 ### 1. Update package.json
 
-Replace CDK v1 dependencies with v2 equivalents:
+Replace CDK v1 dependencies with specific v2 versions:
 
 ```json
 {
   "devDependencies": {
-    "aws-cdk": "2.x"
+    "aws-cdk": "^2.220.0"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.x",
+    "aws-cdk-lib": "^2.220.0",
     "constructs": "^10.0.0"
   }
 }
 ```
+
+**Important:** Use specific versions (e.g., `^2.220.0`) instead of vague specifiers (e.g., `2.x`) to ensure consistent behavior.
 
 Remove all individual `@aws-cdk/*` packages - they're now bundled in `aws-cdk-lib`.
 
