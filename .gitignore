@@ -15,3 +15,5 @@ cdk.out
 
 **/*.pyc
 .codes/**/__pycache__/
+
+models
