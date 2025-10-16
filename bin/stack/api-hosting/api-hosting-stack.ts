@@ -16,10 +16,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as apigateway from '@aws-cdk/aws-apigateway';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iam from '@aws-cdk/aws-iam';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 
@@ -30,7 +31,7 @@ interface PredictLambdaProps {
 
 export class APIHostingStack extends BaseStack {
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const gatewayName = this.stackConfig.APIGatewayName;
@@ -88,14 +89,14 @@ export class APIHostingStack extends BaseStack {
             endpointName: this.getParameter('sageMakerEndpointName'),
         });
         this.putParameter('predictLambdaFunctionArn', lambdaFunction.functionArn);
-        const lambdaInferAlias = lambdaFunction.currentVersion.addAlias(this.commonProps.appConfig.Project.Stage);
+        const lambdaInferAlias = lambdaFunction.addAlias(this.commonProps.appConfig.Project.Stage);
 
         const name = 'PredictLambdaIntegration';
         const role = new iam.Role(this, `${name}-Role`, {
             roleName: `${this.projectPrefix}-${name}-Role`,
             assumedBy: new iam.ServicePrincipal('apigateway.amazonaws.com'),
         });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AWSLambda_FullAccess' });
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AWSLambda_FullAccess'));
 
         const lambdaIntegration = new apigateway.LambdaIntegration(lambdaInferAlias, {
             credentialsRole: role,
@@ -126,15 +127,15 @@ export class APIHostingStack extends BaseStack {
             roleName: `${fullName}-Role`,
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole' });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonKinesisFullAccess' });
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'));
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSageMakerFullAccess'));
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonKinesisFullAccess'));
 
         const lambdaFunction = new lambda.Function(this, baseName, {
             functionName: fullName,
             code: lambda.Code.fromAsset(lambdaPath),
             handler: 'handler.handle',
-            runtime: lambda.Runtime.PYTHON_3_7,
+            runtime: lambda.Runtime.PYTHON_3_11,
             timeout: cdk.Duration.seconds(60 * 5),
             memorySize: 1024,
             role: role,

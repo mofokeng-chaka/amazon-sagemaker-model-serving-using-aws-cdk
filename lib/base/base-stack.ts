@@ -16,9 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as s3 from '@aws-cdk/aws-s3'
-import * as ssm from '@aws-cdk/aws-ssm'
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 export interface StackCommonProps extends cdk.StackProps {
     projectPrefix: string;
@@ -30,7 +31,7 @@ export class BaseStack extends cdk.Stack {
     protected commonProps: StackCommonProps;
     protected stackConfig: any;
 
-    constructor(scope: cdk.Construct, id: string, commonProps: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, id: string, commonProps: StackCommonProps, stackConfig: any) {
         super(scope, id, commonProps);
 
         this.projectPrefix = commonProps.projectPrefix;
@@ -39,7 +40,8 @@ export class BaseStack extends cdk.Stack {
     }
 
     protected createS3Bucket(baseName: string): s3.Bucket {
-        const suffix: string = `${this.commonProps.env?.region}-${this.commonProps.env?.account?.substr(0, 5)}`
+        const randomSuffix = Math.random().toString(36).substring(2, 8);
+        const suffix: string = `${this.commonProps.env?.region}-${randomSuffix}`
 
         const s3Bucket = new s3.Bucket(this, baseName, {
             bucketName: `${this.projectPrefix}-${baseName}-${suffix}`.toLowerCase().replace('_', '-'),

@@ -16,10 +16,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
-import * as sagemaker from '@aws-cdk/aws-sagemaker';
-import * as applicationautoscaling from '@aws-cdk/aws-applicationautoscaling';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as sagemaker from 'aws-cdk-lib/aws-sagemaker';
+import * as applicationautoscaling from 'aws-cdk-lib/aws-applicationautoscaling';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 
@@ -67,7 +68,7 @@ interface ScalingProps {
 
 export class ModelServingStack extends BaseStack {
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const role: iam.IRole = this.createIamRole(`ModelEndpoint-Role`);
@@ -184,11 +185,11 @@ export class ModelServingStack extends BaseStack {
             roleName: `${this.projectPrefix}-${roleBaseName}`,
             assumedBy: new iam.ServicePrincipal('sagemaker.amazonaws.com'),
             managedPolicies: [
-                { managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess' }
+                iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSageMakerFullAccess')
             ],
         });
 
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonS3FullAccess' });
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'));
 
         return role;
     }

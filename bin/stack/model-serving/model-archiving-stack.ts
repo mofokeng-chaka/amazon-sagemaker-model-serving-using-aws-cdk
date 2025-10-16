@@ -16,9 +16,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as s3deploy from '@aws-cdk/aws-s3-deployment';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 
@@ -31,7 +32,7 @@ interface ModelUploadProps {
 
 export class ModelArchivingStack extends BaseStack {
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const modelBucket = this.createS3Bucket(this.stackConfig.BucketBaseName);

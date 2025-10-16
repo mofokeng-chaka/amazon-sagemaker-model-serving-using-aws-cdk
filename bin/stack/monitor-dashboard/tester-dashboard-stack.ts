@@ -16,8 +16,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 import { CloudWatchDashboard } from './cloudwatch-dashboard'
@@ -26,7 +27,7 @@ import { CloudWatchDashboard } from './cloudwatch-dashboard'
 export class TesterDashboardStack extends BaseStack {
     private readonly dashboard: CloudWatchDashboard;
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const dashboardName = this.stackConfig.DashboardName;

@@ -16,12 +16,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import * as sns from '@aws-cdk/aws-sns';
-import * as cw_actions from '@aws-cdk/aws-cloudwatch-actions';
-import * as subscriptions from '@aws-cdk/aws-sns-subscriptions';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as cw_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 import { CloudWatchDashboard } from './cloudwatch-dashboard'
@@ -48,7 +49,7 @@ export interface RestApisWidgetProps {
 export class MonitorDashboardStack extends BaseStack {
     private readonly dashboard: CloudWatchDashboard;
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const dashboardName = this.stackConfig.DashboardName;

@@ -16,11 +16,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import * as cdk from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as sns from '@aws-cdk/aws-sns';
-import * as subs from '@aws-cdk/aws-sns-subscriptions';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
 
 import { BaseStack, StackCommonProps } from '../../../lib/base/base-stack'
 
@@ -35,7 +36,7 @@ interface LambdaProps {
 
 export class APITestingStack extends BaseStack {
 
-    constructor(scope: cdk.Construct, props: StackCommonProps, stackConfig: any) {
+    constructor(scope: Construct, props: StackCommonProps, stackConfig: any) {
         super(scope, stackConfig.Name, props, stackConfig);
 
         const snsTopic = this.createSnsTopic(this.stackConfig.SNSTopicName);
@@ -73,8 +74,8 @@ export class APITestingStack extends BaseStack {
             roleName: `${this.projectPrefix}-${baseName}-Role`,
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole' });
-        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/CloudWatchFullAccess' });
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'));
+        role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchFullAccess'));
         return role;
     }
 
@@ -88,7 +89,7 @@ export class APITestingStack extends BaseStack {
             functionName: fullName,
             code: lambda.Code.fromAsset(lambdaPath),
             handler: 'handler.handle',
-            runtime: lambda.Runtime.PYTHON_3_7,
+            runtime: lambda.Runtime.PYTHON_3_11,
             timeout: cdk.Duration.minutes(15), // MAX 15 minutes
             memorySize: 256,
             role: props.role,
